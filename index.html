@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>骑手招聘管理 · 可运行骨架（合成数据演示）</title>
+<style>
+  :root{
+    --bg:#f7f6f3; --card:#ffffff; --ink:#1c1b19; --muted:#6b675f;
+    --line:#e5e1d8; --accent:#1f5f4a; --accent-soft:#eaf4ef; --warn:#8a4b16;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font:16px/1.7 -apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}
+  .wrap{max-width:980px;margin:0 auto;padding:48px 24px 80px}
+  header{border-bottom:1px solid var(--line);padding-bottom:28px;margin-bottom:32px}
+  h1{font-size:34px;line-height:1.25;margin:0 0 12px;letter-spacing:-.5px}
+  h2{font-size:21px;margin:44px 0 14px;padding-left:11px;border-left:3px solid var(--accent)}
+  h3{font-size:16px;margin:22px 0 8px;color:var(--muted);font-weight:600}
+  p{margin:8px 0}
+  code{font-family:ui-monospace,Consolas,"Courier New",monospace;font-size:13.5px;
+    background:#f0eee9;padding:2px 6px;border-radius:4px}
+  pre{background:#151917;color:#d7e3dc;padding:16px 18px;border-radius:10px;
+    overflow-x:auto;font:13px/1.6 ui-monospace,Consolas,monospace;margin:10px 0}
+  pre .ok{color:#7fd1a8}
+  .tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+  .tag{background:var(--accent-soft);color:var(--accent);border:1px solid #cfe4da;
+    padding:4px 10px;border-radius:999px;font-size:13px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;
+    padding:22px 24px;margin:14px 0}
+  .lead{font-size:17px;color:#3a3833}
+  ul{margin:8px 0;padding-left:22px}
+  li{margin:5px 0}
+  img{width:100%;border:1px solid var(--line);border-radius:10px;display:block}
+  .cap{font-size:13px;color:var(--muted);margin-top:8px}
+  .btn{display:inline-block;background:var(--accent);color:#fff;text-decoration:none;
+    padding:13px 22px;border-radius:9px;font-weight:600;font-size:15px}
+  .btn:hover{background:#17483a}
+  .hash{font-size:12.5px;color:var(--muted);word-break:break-all;margin-top:10px}
+  .kv{display:grid;grid-template-columns:150px 1fr;gap:6px 14px;font-size:14.5px}
+  .kv b{color:var(--muted);font-weight:600}
+  .note{border-left:3px solid var(--warn);background:#fdf6ee;padding:14px 16px;border-radius:0 8px 8px 0}
+  footer{margin-top:52px;padding-top:20px;border-top:1px solid var(--line);
+    color:var(--muted);font-size:13.5px}
+  @media(max-width:640px){
+    .wrap{padding:28px 16px 56px}
+    h1{font-size:26px}
+    .kv{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>骑手招聘管理 · 可运行骨架</h1>
+  <p class="lead">一个能真正跑起来的招聘后台演示：骑手档案增删查、工号（手机号）唯一、重复登记直接返回 409。不是方案文档，是可按下面命令在你机器上复跑的服务。</p>
+  <div class="tags">
+    <span class="tag">冒烟 7/7 通过</span>
+    <span class="tag">FastAPI + SQLite</span>
+    <span class="tag">前端已打包，开箱即看</span>
+    <span class="tag">全部合成数据</span>
+  </div>
+</header>
+
+<h2>一、这套东西解决什么问题</h2>
+<div class="card">
+  <p>招聘专员每天要手工登记骑手：姓名、手机号、城市、车辆类型、经验年限。手工登记最常出的两个错是<strong>重复录入</strong>和<strong>状态乱跳</strong>（还没面试就被标成已入职）。</p>
+  <ul>
+    <li><strong>档案管理</strong>：列表分页、按关键字查询、新增、删除。</li>
+    <li><strong>工号唯一</strong>：以手机号作为唯一键，重复登记返回 <code>409 Conflict</code>，不会产生两条脏数据。</li>
+    <li><strong>投递状态机</strong>：<code>submitted → screening → interview → offered → hired</code>，非法跳转（如 <code>screening → hired</code>）直接 409，状态改不动。</li>
+  </ul>
+</div>
+
+<h2>二、能跑的证据</h2>
+
+<h3>1）界面实拍（本地真实运行，非设计稿）</h3>
+<img src="assets/demo.png" alt="骑手招聘后台界面截图：统计卡片、骑手档案表格、新增表单">
+<div class="cap">截图取自 <code>uvicorn app.main:app --port 8090</code> 启动后的真实页面，数据为种子合成数据（12 名骑手、6 条投递）。</div>
+
+<h3>2）冒烟脚本实测输出（7/7 PASS）</h3>
+<pre>PASS  GET /api/health                              http=200 db=sqlite
+PASS  GET /api/v1/riders                           http=200 total=15 page=5
+PASS  POST /api/v1/riders                          http=201 id=16 phone=13993797225
+PASS  POST /api/v1/applications                    http=201 id=8 status=submitted
+PASS  POST /api/v1/applications/{id}/transition    http=200 status=screening
+PASS  POST /transition illegal (screening->hired)  http=409 illegal transition
+PASS  GET /openapi.json                            http=200
+
+<span class="ok">SMOKE PASS 7/7</span></pre>
+<div class="cap">复跑命令：<code>python tests/smoke_e2e.py --base http://127.0.0.1:8090</code></div>
+
+<h3>3）三个核心接口的真实返回</h3>
+<pre>GET /api/health
+{"status":"ok","db":"sqlite","riders":12,"time_utc":"2026-11-04T13:00:44+00:00"}
+
+GET /api/v1/riders
+{"items":[{"id":1,"name":"林小北","phone":"13800000001","city":"上海",
+          "vehicle":"ebike","years_experience":3,"note":"合成数据-演示用"}],
+ "total":12,"limit":20,"offset":0}
+
+POST /api/v1/riders   （同一手机号第二次提交）
+HTTP 409
+{"detail":"phone 13900000001 already exists"}</pre>
+
+<h2>三、怎么自己跑起来</h2>
+<div class="card">
+  <p><strong>第 1 条</strong>：装依赖</p>
+<pre>cd back && pip install -r requirements.txt</pre>
+  <p><strong>第 2 条</strong>：启动服务</p>
+<pre>uvicorn app.main:app --port 8090</pre>
+  <p><strong>第 3 条</strong>：打开地址</p>
+<pre>http://127.0.0.1:8090</pre>
+  <p>前端已在 <code>front/dist</code> 里打包好，后端启动后会直接托管，不需要再装 Node。接口文档在 <code>http://127.0.0.1:8090/docs</code>。</p>
+</div>
+
+<h2>四、数据声明与边界</h2>
+<div class="card">
+  <p><strong>数据声明</strong>：页面与接口里的姓名、手机号、城市全部为合成数据（<code>13800000001</code> 这类连号），不含任何真实个人信息，不对接任何真实骑手库。</p>
+  <p><strong>这套东西明确不做</strong>：</p>
+  <ul>
+    <li>不做真实支付、结算、工资代发；</li>
+    <li>不接真实骑手库、不做实名认证与背调；</li>
+    <li>不做多租户、不做权限体系（演示用单管理员）；</li>
+    <li>不做生产级高可用与数据备份策略。</li>
+  </ul>
+  <p class="note">如果需求里包含上述任一项，说明这套骨架只覆盖了「档案 + 状态机」那一半，另一半需要单独评估与排期。</p>
+</div>
+
+<h2>五、下载完整源码</h2>
+<div class="card">
+  <p>包含后端（FastAPI + SQLite + 状态机）、前端源码与已打包产物、冒烟脚本、Dockerfile 与 docker-compose、交付说明。已剔除本地数据库与缓存，解压即干净。</p>
+  <a class="btn" href="rider-hiring-skeleton-20261104.zip" download>下载源码包（356 KB）</a>
+  <div class="hash">SHA-256：d08b45d996a506caea37409b7d8cc2d44a0e408ee8033f16462e4039ec63b306</div>
+</div>
+
+<h2>六、工期与验收</h2>
+<div class="card">
+  <p><strong>工期</strong>：同类需求（骑手 / 招聘 / 后台档案管理）在确认验收口径后 <strong>3 个工作日</strong>内按需求裁剪交付；当前这套骨架开箱即可运行。</p>
+  <p><strong>验收方式</strong>：按上面的接口清单逐条复跑，再执行 <code>python tests/smoke_e2e.py --base http://127.0.0.1:8090</code>，期望 7/7 PASS；状态机非法跳转必须返回 409。</p>
+</div>
+
+<footer>
+  <div class="kv">
+    <b>技术栈</b><div>FastAPI · SQLite · 原生前端（已打包）</div>
+    <b>运行环境</b><div>Python 3.9+，单机即可</div>
+    <b>页面性质</b><div>项目自述页，不含任何账号、密钥或内部地址</div>
+  </div>
+</footer>
+
+</div>
+</body>
+</html>
