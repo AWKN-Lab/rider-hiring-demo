@@ -106,10 +106,12 @@ HTTP 409
 
 <h2>三、怎么自己跑起来</h2>
 <div class="card">
-  <p><strong>第 1 条</strong>：装依赖</p>
-<pre>cd back && pip install -r requirements.txt</pre>
+  <p><strong>前置条件</strong>：Python ≥ 3.10；不需要任何 key / token（默认 SQLite + 合成数据）；首次启动自动建表并播种；服务监听 <code>127.0.0.1:8090</code>，启动前先确认该端口空闲；命令都在 <code>back/</code> 下执行。</p>
+  <p><strong>第 1 条</strong>：进目录并装依赖</p>
+<pre>cd back
+pip install -r requirements.txt</pre>
   <p><strong>第 2 条</strong>：启动服务</p>
-<pre>uvicorn app.main:app --port 8090</pre>
+<pre>python -m uvicorn app.main:app --host 127.0.0.1 --port 8090</pre>
   <p><strong>第 3 条</strong>：打开地址</p>
 <pre>http://127.0.0.1:8090</pre>
   <p>前端已在 <code>front/dist</code> 里打包好，后端启动后会直接托管，不需要再装 Node。接口文档在 <code>http://127.0.0.1:8090/docs</code>。</p>
@@ -131,8 +133,8 @@ HTTP 409
 <h2>五、下载完整源码</h2>
 <div class="card">
   <p>包含后端（FastAPI + SQLite + 状态机）、前端源码与已打包产物、冒烟脚本、Dockerfile 与 docker-compose、交付说明。已剔除本地数据库与缓存，解压即干净。</p>
-  <a class="btn" href="rider-hiring-skeleton-20261104.zip" download>下载源码包（356 KB）</a>
-  <div class="hash">SHA-256：d08b45d996a506caea37409b7d8cc2d44a0e408ee8033f16462e4039ec63b306</div>
+  <a class="btn" href="rider-hiring-skeleton-20261104.zip" download>下载源码包（348 KB）</a>
+  <div class="hash">SHA-256：5b34553a22b16de195fd1e4c776f658cef7c3db57487880db8a0b44b89eb8daf</div>
 </div>
 
 <h2>六、工期与验收</h2>

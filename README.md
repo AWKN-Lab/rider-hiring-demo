@@ -87,9 +87,9 @@ uvicorn app.main:app --port 8090
 
 包含后端（FastAPI + SQLite + 状态机）、前端源码与已打包产物、冒烟脚本、Dockerfile 与 docker-compose、交付说明。已剔除本地数据库与缓存。
 
-**下载**：[rider-hiring-skeleton-20261104.zip](https://github.com/AWKN-Lab/rider-hiring-demo/releases/download/v1.0.0/rider-hiring-skeleton-20261104.zip)（356 KB）
+**下载**：[rider-hiring-skeleton-20261104.zip](https://github.com/AWKN-Lab/rider-hiring-demo/releases/download/v1.0.0/rider-hiring-skeleton-20261104.zip)（348 KB）
 
-**SHA-256**：`d08b45d996a506caea37409b7d8cc2d44a0e408ee8033f16462e4039ec63b306`
+**SHA-256**：`5b34553a22b16de195fd1e4c776f658cef7c3db57487880db8a0b44b89eb8daf`
 
 ## 六、工期与验收
 
